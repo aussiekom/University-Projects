@@ -12,3 +12,4 @@ Showcases a diverse array of projects spanning various disciplines, including:
 These projects epitomize the spectrum of my academic engagement, encompassing coding, software development, data analysis, and visualization. 
 
 
+
