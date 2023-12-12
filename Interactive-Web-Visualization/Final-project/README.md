@@ -12,3 +12,4 @@ The predictive model, based on regression analysis, estimates scooter demand usi
 * Regression Analysis
 * Data was downloaded from [here](https://simplemaps.com/data/world-cities), then sorted to select Europe countries and cities
 
+
