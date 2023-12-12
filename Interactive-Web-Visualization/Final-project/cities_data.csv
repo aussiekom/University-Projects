@@ -1,0 +1,10 @@
+"Index","CITY","CITY_ASCII","LAT","LNG","COUNTRY","ISO2","ISO3","ADMIN_NAME","CAPITAL","POPULATION","ID"
+1,"Paris","Paris",48.8567,2.3522,"France","FR","FRA","Île-de-France","primary",11060000,1250015082
+3,"Barcelona","Barcelona",41.3825,2.1769,"Spain","ES","ESP","Catalonia","admin",4800000,1724594040
+4,"Berlin","Berlin",52.52,13.405,"Germany","DE","DEU","Berlin","primary",4473101,1276451290
+5,"Rome","Rome",41.8931,12.4828,"Italy","IT","ITA","Lazio","primary",2872800,1380382862
+9,"Vienna","Vienna",48.2083,16.3725,"Austria","AT","AUT","Wien","primary",1973403,1040261752
+10,"Bucharest","Bucharest",44.4325,26.1039,"Romania","RO","ROU","Bucureşti","primary",1883425,1642414442
+11,"Warsaw","Warsaw",52.23,21.0111,"Poland","PL","POL","Mazowieckie","primary",1860281,1616024847
+12,"Milan","Milan",45.4669,9.19,"Italy","IT","ITA","Lombardy","admin",1366180,1380724377
+13,"Prague","Prague",50.0875,14.4214,"Czechia","CZ","CZE","Praha","primary",1335084,1203744823
