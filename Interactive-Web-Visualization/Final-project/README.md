@@ -10,6 +10,6 @@ The predictive model, based on regression analysis, estimates scooter demand usi
 * [echarts4r](https://echarts4r.john-coene.com/) - for interactive plots and graphs
 * API requests from the OpenWeatherMap
 * Regression Analysis
-* Data was downloaded from [here](https://simplemaps.com/data/world-cities), then sorted to select Europe countries and cities
+* Data was downloaded from [here](https://simplemaps.com/data/world-cities), then sorted to select some Europe countries and cities
 
 
