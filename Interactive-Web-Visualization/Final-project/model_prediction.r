@@ -1,3 +1,8 @@
+library(httr)
+library(scales)
+library(stats)
+library(readr)
+
 # Forecast data by cities
 get_weather_forecaset_by_cities <- function(city_names){
   # Vectors to hold data temporarily
