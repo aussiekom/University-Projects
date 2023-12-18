@@ -1,4 +1,4 @@
-source("model_prediction.R")
+source("model_prediction.r")
 
 ### define functions ------
 test_weather_data_generation <- function(){
