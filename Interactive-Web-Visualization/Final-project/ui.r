@@ -1,21 +1,8 @@
-library(dplyr)
 library(leaflet)
-library(tidyverse)
+library(echarts4r)
+library(shiny)
 
 source("model_prediction.r")
-
-### define functions ------
-test_weather_data_generation <- function(){
-  
-  city_weather_scooter_df <- generate_city_weather_scooter_data()
-  stopifnot(length(city_weather_scooter_df) > 0)
-  print(head(city_weather_scooter_df))
-  return(city_weather_scooter_df)
-}
-
-test_weather_data_generation()
-
-
 
 
 ### ui part --------
