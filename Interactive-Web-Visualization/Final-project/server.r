@@ -50,6 +50,12 @@ shinyServer(function(input, output){
                                              cities_max_scooter$SCOOTER_PREDICTION_LEVEL == "large" ~ 12),
                            color = ~color_levels(cities_max_scooter$SCOOTER_PREDICTION_LEVEL))
       })
+
+      # hide plots when "All" is selected
+      output$temp_line <- renderUI(NULL)
+      output$scooter_line <- renderUI(NULL)
+      output$scooter_date_output <- renderUI(NULL)
+      output$humidity_pred_chart <- renderUI(NULL)
     }
     else {
       # If just one specific city was selected, then render a leaflet map with one marker
