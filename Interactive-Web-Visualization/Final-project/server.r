@@ -1,4 +1,8 @@
-source("model_prediction.R")
+library(dplyr)
+library(leaflet)
+library(tidyverse)
+
+source("model_prediction.r")
 
 ### define functions ------
 test_weather_data_generation <- function(){
