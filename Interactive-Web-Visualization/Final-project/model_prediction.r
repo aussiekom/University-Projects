@@ -119,7 +119,6 @@ predict_scooter_demand <- function(TEMPERATURE, HUMIDITY, WIND_SPEED, VISIBILITY
     VISIBILITY*model["VISIBILITY"] 
   
   season_terms <- c()
-  hour_terms <- c()
   
   # Calculated season related regression terms
   for(season in SEASONS) {
@@ -130,33 +129,30 @@ predict_scooter_demand <- function(TEMPERATURE, HUMIDITY, WIND_SPEED, VISIBILITY
                           "WINTER" = model["WINTER"])
     season_terms <- c(season_terms, season_term)
   }
-  # Calculated hour related regression terms
-  for(hour in HOURS){
-    hour_term <- switch(as.character(hour),
-                       "0" = model["0"],"1" = model["1"],"2" = model["2"],"3" = model["3"],
-                       "4" = model["4"],"5" = model["5"],"6" = model["6"],"7" = model["7"],
-                       "8" = model["8"],"9" = model["9"],"10" = model["10"],"11" = model["11"],
-                       "12" = model["12"],"13" = model["13"],"14" = model["14"],"15" = model["15"],
-                       "16" = model["16"], "17" = model["17"],"18" = model["18"],"19" = model["19"],
-                       "20" = model["20"], "21" = model["21"],"22" = model["22"],"23" = model["23"])
-    
-    hour_terms <- c(hour_terms, hour_term)
-    
+  
+  # Obtain the hour term for the current hour
+  current_hour <- as.numeric(format(Sys.time(), "%H"))
+  hour_term <- switch(as.character(current_hour),
+                      "0" = model["0"],"1" = model["1"],"2" = model["2"],"3" = model["3"],
+                      "4" = model["4"],"5" = model["5"],"6" = model["6"],"7" = model["7"],
+                      "8" = model["8"],"9" = model["9"],"10" = model["10"],"11" = model["11"],
+                      "12" = model["12"],"13" = model["13"],"14" = model["14"],"15" = model["15"],
+                      "16" = model["16"], "17" = model["17"],"18" = model["18"],"19" = model["19"],
+                      "20" = model["20"], "21" = model["21"],"22" = model["22"],"23" = model["23"])
+  
+  regression_terms <- as.integer(weather_terms + season_terms + hour_term)
+  
+  for (i in 1:length(regression_terms)) {
+    if(regression_terms[i] < 0) {
+      regression_terms[i] <- 0
+    } else {
+      regression_terms[i] <- regression_terms[i]
+    }
   }
   
-  regression_terms<-as.integer(weather_terms + season_terms + hour_terms)
-  for (i in 1:length(regression_terms))
-    if(regression_terms[i] < 0)
-    {
-      regression_terms[i] <- 0
-      
-    }
-  else
-  {
-    regression_terms[i] <- regression_terms[i]
-  }
   return(regression_terms)
 }
+
 
 
 # Defines a scooter-sharing demand level, used for leaflet visualization
