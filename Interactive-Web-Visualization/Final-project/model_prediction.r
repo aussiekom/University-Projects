@@ -109,7 +109,7 @@ load_saved_model <- function(model_name){
 }
 
 
-# Predicted scooter demand using a saved regression model
+# predict scooter demand using a saved regression model
 predict_scooter_demand <- function(TEMPERATURE, HUMIDITY, WIND_SPEED, VISIBILITY, SEASONS, HOURS){
   
   model <- load_saved_model("model.csv")
