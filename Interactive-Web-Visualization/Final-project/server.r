@@ -122,11 +122,12 @@ shinyServer(function(input, output){
       })
 
       
-      ### humidity plot
+      ### humidity plot 
       output$humidity_pred_chart <- echarts4r::renderEcharts4r({
         city_weather_scooter_df_filter %>%
           e_charts(HUMIDITY) %>%
-          e_line(SCOOTER_PREDICTION, name = "Scooter Prediction") %>%
+          e_effect_scatter(SCOOTER_PREDICTION, name = "Scooter Prediction") %>%
+          e_visual_map(SCOOTER_PREDICTION) %>%
           e_title(paste("Scooter Prediction vs Humidity of", input$city_dropdown)) %>%
           e_tooltip(trigger = "axis") %>%
           e_x_axis(name = "Humidity") %>%
