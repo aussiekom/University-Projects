@@ -1,6 +1,5 @@
 library(dplyr)
 library(leaflet)
-library(tidyverse)
 
 source("model_prediction.r")
 
