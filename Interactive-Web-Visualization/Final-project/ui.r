@@ -1,29 +1,8 @@
 library(leaflet)
-library(dplyr)
 library(echarts4r)
 library(shiny)
-library(ggplot2)
-library(leaflet)
-library(tidyverse)
-library(httr)
-library(scales)
-library(shinythemes)
-library(stats)
 
-source("model_prediction.R")
-
-### define functions ------
-test_weather_data_generation <- function(){
-  
-  city_weather_scooter_df <- generate_city_weather_scooter_data()
-  stopifnot(length(city_weather_scooter_df) > 0)
-  print(head(city_weather_scooter_df))
-  return(city_weather_scooter_df)
-}
-
-test_weather_data_generation()
-
-
+source("model_prediction.r")
 
 
 ### ui part --------
@@ -45,11 +24,14 @@ ui <- shinyUI(
                 tabPanel(title = "Map", 
                          leaflet::leafletOutput("city_scooter_map", 
                                        height = 1000)),
-                tabPanel(title = "Plots", 
-                         echarts4r::echarts4rOutput('temp_line'),
-                         echarts4r::echarts4rOutput("scooter_line"),
-                         shiny::verbatimTextOutput("scooter_date_output"), 
-                         echarts4r::echarts4rOutput('humidity_pred_chart')),
+                  tabPanel(title = "Plots", 
+                           conditionalPanel(
+                             condition = "input.city_dropdown != 'All'",
+                             echarts4r::echarts4rOutput('temp_line'),
+                             echarts4r::echarts4rOutput("scooter_line"),
+                             shiny::verbatimTextOutput("scooter_date_output"), 
+                             echarts4r::echarts4rOutput('humidity_pred_chart')
+                           )),
                 tabPanel(title = "About", 
                          br(),
                          strong("The Scooter Demand Prediction App"),

@@ -1,3 +1,32 @@
+library(httr)
+library(scales)
+library(stats)
+library(readr)
+
+# functions to generate the map labels
+get_weather_label <- function(city_name, weather_main) {
+  weather_label <- paste(sep = "",
+                         "<b><a href=''>",
+                         city_name,
+                         "</a></b>", "</br>",
+                         "<b>", weather_main, "</b></br>")
+  return(weather_label)
+}
+
+get_weather_detail_label <- function(result, city_name) {
+  weather_detail_label <- paste(sep = "",
+                                "<b><a href=''>",
+                                city_name,
+                                "</a></b>", "</br>",
+                                "<b>", result$weather[[1]]$main, "</b></br>",
+                                "Temperature: ", result$main$temp, " C </br>",
+                                "Visibility: ", result$visibility, " m </br>",
+                                "Humidity: ", result$main$humidity, " % </br>",
+                                "Wind Speed: ", result$wind$speed, " m/s </br>",
+                                "Datetime: ", result$dt_txt, " </br>")
+  return(weather_detail_label)
+}
+
 # Forecast data by cities
 get_weather_forecaset_by_cities <- function(city_names){
   # Vectors to hold data temporarily
@@ -12,31 +41,32 @@ get_weather_forecaset_by_cities <- function(city_names){
   forecast_date <-c()
   weather_labels<-c()
   weather_details_labels<-c()
-  
+
   # 5-days forecast data for each city
   for (city_name in city_names){
-    url_get="https://api.openweathermap.org/data/2.5/forecast"
+    url_get <- "https://api.openweathermap.org/data/2.5/forecast"
     api_key <- "b6a9b1005223a17d24f1c2441fde97a7"
-    forecast_query <- list(q = city_name, appid = api_key, units="metric")
-    response <- GET(url_get, query=forecast_query)
-    json_list <-content(response, as="parsed")
+    forecast_query <- list(q = city_name, appid = api_key, units = "metric")
+    response <- GET(url_get, query = forecast_query)
+    json_list <- content(response, as = "parsed")
     results <- json_list$list
-    
+
     for(result in results) {
       # Gets weather data and append them to vectors
       city <- c(city, city_name)
-      weather <- c(weather, result$weather[[1]]$main)
-      
+      weather_main <- result$weather[[1]]$main
+      weather <- c(weather, weather_main)
+
       # Gets predictor variables
       temperature <- c(temperature, result$main$temp)
       visibility <- c(visibility, result$visibility)
       humidity <- c(humidity, result$main$humidity)
       wind_speed <- c(wind_speed, result$wind$speed)
-      
+
       forecast_datetime <- result$dt_txt
-      hour <- as.numeric(strftime(forecast_datetime, format="%H"))
-      month <- as.numeric(strftime(forecast_datetime, format="%m"))
-      forecast_date <-c(forecast_date, forecast_datetime)
+      hour <- as.numeric(strftime(forecast_datetime, format = "%H"))
+      month <- as.numeric(strftime(forecast_datetime, format = "%m"))
+      forecast_date <- c(forecast_date, forecast_datetime)
       season <- "Spring"
       # Simple rule to determine season
       if (month >= 3 && month <= 5)
@@ -47,48 +77,35 @@ get_weather_forecaset_by_cities <- function(city_names){
         season <- "AUTUMN"
       else
         season <- "WINTER"
-      #  HTML label for Leaflet
-      weather_label <- paste(sep = "",
-                             "<b><a href=''>",
-                             city_name, 
-                             "</a></b>", "</br>", 
-                             "<b>", result$weather[[1]]$main, "</b></br>")
-      
-      # Adds a detailed HTML label to be shown on Leaflet
-      weather_detail_label <- paste(sep = "",
-                                    "<b><a href=''>",
-                                    city_name, 
-                                    "</a></b>", "</br>", 
-                                    "<b>", result$weather[[1]]$main, "</b></br>",
-                                    "Temperature: ", result$main$temp, " C </br>",
-                                    "Visibility: ", result$visibility, " m </br>",
-                                    "Humidity: ", result$main$humidity, " % </br>", 
-                                    "Wind Speed: ", result$wind$speed, " m/s </br>", 
-                                    "Datetime: ", forecast_datetime, " </br>")
-      
+
+      # HTML label for Leaflet
+      weather_label <- get_weather_label(city_name, weather_main)
+      weather_detail_label <- get_weather_detail_label(result, city_name)
+
       weather_labels <- c(weather_labels, weather_label)
       weather_details_labels <- c(weather_details_labels, weather_detail_label)
-      
+
       seasons <- c(seasons, season)
       hours <- c(hours, hour)
     }
   }
-  
-  weather_df <- tibble(CITY_ASCII = city, 
-                       WEATHER = weather, 
+
+  weather_df <- tibble(CITY_ASCII = city,
+                       WEATHER = weather,
                        TEMPERATURE = temperature,
-                       VISIBILITY = visibility, 
-                       HUMIDITY = humidity, 
-                       WIND_SPEED = wind_speed, 
-                       SEASONS = season, 
-                       HOURS = hours, 
-                       FORECASTDATETIME = forecast_date, 
-                       LABEL = weather_labels, 
+                       VISIBILITY = visibility,
+                       HUMIDITY = humidity,
+                       WIND_SPEED = wind_speed,
+                       SEASONS = season,
+                       HOURS = hours,
+                       FORECASTDATETIME = forecast_date,
+                       LABEL = weather_labels,
                        DETAILED_LABEL = weather_details_labels)
-  
+
   return(weather_df)
-  
+
 }
+
 
 # Loaded a saved regression model (variables and coefficients) from csv
 load_saved_model <- function(model_name){
@@ -114,7 +131,6 @@ predict_scooter_demand <- function(TEMPERATURE, HUMIDITY, WIND_SPEED, VISIBILITY
     VISIBILITY*model["VISIBILITY"] 
   
   season_terms <- c()
-  hour_terms <- c()
   
   # Calculated season related regression terms
   for(season in SEASONS) {
@@ -125,33 +141,30 @@ predict_scooter_demand <- function(TEMPERATURE, HUMIDITY, WIND_SPEED, VISIBILITY
                           "WINTER" = model["WINTER"])
     season_terms <- c(season_terms, season_term)
   }
-  # Calculated hour related regression terms
-  for(hour in HOURS){
-    hour_term <- switch(as.character(hour),
-                       "0" = model["0"],"1" = model["1"],"2" = model["2"],"3" = model["3"],
-                       "4" = model["4"],"5" = model["5"],"6" = model["6"],"7" = model["7"],
-                       "8" = model["8"],"9" = model["9"],"10" = model["10"],"11" = model["11"],
-                       "12" = model["12"],"13" = model["13"],"14" = model["14"],"15" = model["15"],
-                       "16" = model["16"], "17" = model["17"],"18" = model["18"],"19" = model["19"],
-                       "20" = model["20"], "21" = model["21"],"22" = model["22"],"23" = model["23"])
-    
-    hour_terms <- c(hour_terms, hour_term)
-    
+  
+  # Obtain the hour term for the current hour
+  current_hour <- as.numeric(format(Sys.time(), "%H"))
+  hour_term <- switch(as.character(current_hour),
+                      "0" = model["0"],"1" = model["1"],"2" = model["2"],"3" = model["3"],
+                      "4" = model["4"],"5" = model["5"],"6" = model["6"],"7" = model["7"],
+                      "8" = model["8"],"9" = model["9"],"10" = model["10"],"11" = model["11"],
+                      "12" = model["12"],"13" = model["13"],"14" = model["14"],"15" = model["15"],
+                      "16" = model["16"], "17" = model["17"],"18" = model["18"],"19" = model["19"],
+                      "20" = model["20"], "21" = model["21"],"22" = model["22"],"23" = model["23"])
+  
+  regression_terms <- as.integer(weather_terms + season_terms + hour_term)
+  
+  for (i in 1:length(regression_terms)) {
+    if(regression_terms[i] < 0) {
+      regression_terms[i] <- 0
+    } else {
+      regression_terms[i] <- regression_terms[i]
+    }
   }
   
-  regression_terms<-as.integer(weather_terms + season_terms + hour_terms)
-  for (i in 1:length(regression_terms))
-    if(regression_terms[i] < 0)
-    {
-      regression_terms[i] <- 0
-      
-    }
-  else
-  {
-    regression_terms[i] <- regression_terms[i]
-  }
   return(regression_terms)
 }
+
 
 
 # Defines a scooter-sharing demand level, used for leaflet visualization
