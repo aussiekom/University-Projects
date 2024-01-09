@@ -4,6 +4,30 @@ library(shiny)
 
 source("model_prediction.r")
 
+# functions to generate the map labels
+get_weather_label <- function(city_name, weather_main) {
+  weather_label <- paste(sep = "",
+                         "<b><a href=''>",
+                         city_name,
+                         "</a></b>", "</br>",
+                         "<b>", weather_main, "</b></br>")
+  return(weather_label)
+}
+
+get_weather_detail_label <- function(result, city_name) {
+  weather_detail_label <- paste(sep = "",
+                                "<b><a href=''>",
+                                city_name,
+                                "</a></b>", "</br>",
+                                "<b>", result$weather[[1]]$main, "</b></br>",
+                                "Temperature: ", result$main$temp, " C </br>",
+                                "Visibility: ", result$visibility, " m </br>",
+                                "Humidity: ", result$main$humidity, " % </br>",
+                                "Wind Speed: ", result$wind$speed, " m/s </br>",
+                                "Datetime: ", result$dt_txt, " </br>")
+  return(weather_detail_label)
+}
+
 
 ### ui part --------
 ui <- shinyUI(
