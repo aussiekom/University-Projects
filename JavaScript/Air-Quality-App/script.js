@@ -1,3 +1,4 @@
+// variable declaration
 const errorLabel = document.querySelector("label[for='error-msg']")
 const latInp = document.querySelector("#latitude")
 const lonInp = document.querySelector("#longitude")
@@ -7,9 +8,11 @@ const srchBtn = document.querySelector(".search-btn")
 const componentsEle = document.querySelectorAll(".component-val")
 //const airInfoEle = document.querySelector('.air-info');
 
+// constants for api key and endpoint 
 const appId = "b6a9b1005223a17d24f1c2441fde97a7" // Get your own API Key from https://home.openweathermap.org/api_keys
 const link = "https://api.openweathermap.org/data/2.5/air_pollution"	// API end point
 
+// get ueser's current location
 const getUserLocation = () => {
 	// Get user Location
 	if (navigator.geolocation) {
@@ -19,6 +22,7 @@ const getUserLocation = () => {
 	}
 }
 
+// callback in case of successfully obtained user's location
 const onPositionGathered = (pos) => {
 	let lat = pos.coords.latitude.toFixed(4), lon = pos.coords.longitude.toFixed(4)
 
@@ -30,6 +34,7 @@ const onPositionGathered = (pos) => {
 	getAirQuality(lat, lon)
 }
 
+// fetching the air quality data
 const getAirQuality = async (lat, lon) => {
 	// Get data from api
 	const rawData = await fetch(`${link}?lat=${lat}&lon=${lon}&appid=${appId}`).catch(err => {
@@ -41,6 +46,8 @@ const getAirQuality = async (lat, lon) => {
 	setComponentsOfAir(airData)
 }
 
+// set AQI on the webpage and update the air quality status based on a switch statement that maps different 
+// AQI levels to corresponding status and colors 
 const setValuesOfAir = airData => {
 	const aqi = airData.list[0].main.aqi
 	let airStat = "", color = ""
@@ -79,6 +86,8 @@ const setValuesOfAir = airData => {
 	airQualityStat.style.color = color
 }
 
+// set the air quality components on the webpage, 
+// use loop to iterate through elements with class 'component-val'
 const setComponentsOfAir = airData => {
 	let components = {...airData.list[0].components}
 	componentsEle.forEach(ele => {
@@ -87,10 +96,13 @@ const setComponentsOfAir = airData => {
 	})
 }
 
+// callback in case of any errors
 const onPositionGatherError = e => {
 	errorLabel.innerText = e.message
 }
 
+
+// event listener for search button 
 srchBtn.addEventListener("click", () => {
 	// Remove the `hidden` class from the `.air-info` element
 	airInfoEle.classList.remove('hidden');
@@ -98,9 +110,6 @@ srchBtn.addEventListener("click", () => {
 	getAirQuality(parseFloat(latInp.value).toFixed(4), parseFloat(lonInp.value).toFixed(4))
 })
 
-const airInfoEle = document.querySelector('.air-info');
-srchBtn.addEventListener("click", () => {
-  airInfoEle.style.display = 'block';
-});
-
+// calling the final function when the script is executed, initiating the process
+// of obtaining the user's location and fetching air quality data 
 getUserLocation()
