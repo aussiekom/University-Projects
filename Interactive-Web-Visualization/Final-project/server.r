@@ -13,10 +13,6 @@ test_weather_data_generation <- function(){
   
 }
 
-test_weather_data_generation()
-
-
-
 
 ### server part ------
 shinyServer(function(input, output){
