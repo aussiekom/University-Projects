@@ -9,6 +9,7 @@ Showcases a diverse array of projects spanning various disciplines, including:
 * **C#:** Showcasing projects developed using C# for software development, offering insights into problem-solving and application development.
 * **Interactive Web Visualization:** Demonstrating the possibility of visualisation flexibility through interactive web visualizations, conveying insights using R Shiny application and JavaScript power.
 
+
 These projects epitomize the spectrum of my academic engagement, encompassing coding, software development, data analysis, and visualization. 
 
 
